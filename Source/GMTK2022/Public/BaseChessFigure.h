@@ -23,12 +23,18 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, BlueprintPure = false)
-	TArray<FGridCoords> GetPossibleMoves() const;
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, BlueprintPure = false)
-	bool CanGoTo(const FGridCoords& Cell) const;
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	TArray<FGridCoords> GetPossibleMoves();
+	UFUNCTION(BlueprintCallable)
+	static bool CanEnterCell(
+		const AChessGrid* Grid, const FGridCoords& Cell, EChessColor OurColor, EFigureType OurType);
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	bool CanGoTo(const FGridCoords& Cell);
 	UFUNCTION(BlueprintCallable)
 	bool TryGoTo(const FGridCoords& Cell);
+
+	UFUNCTION(BlueprintCallable)
+	bool InitialPositionSet(const FGridCoords& Cell);
 
 	UFUNCTION(BlueprintPure)
 	bool IsMoveInProgress() const;
@@ -52,6 +58,25 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FChessMoveEndedSignature MoveEndedDispatcher;
+
+	UFUNCTION(BlueprintCallable)
+	static TArray<FGridCoords> GetPawnMoves(
+		const AChessGrid* Grid, const FGridCoords& StartingPoint, EChessColor Color);
+	UFUNCTION(BlueprintCallable)
+	static TArray<FGridCoords> GetRookMoves(
+		const AChessGrid* Grid, const FGridCoords& StartingPoint, EChessColor Color);
+	UFUNCTION(BlueprintCallable)
+	static TArray<FGridCoords> GetKnightMoves(
+		const AChessGrid* Grid, const FGridCoords& StartingPoint, EChessColor Color);
+	UFUNCTION(BlueprintCallable)
+	static TArray<FGridCoords> GetBishopMoves(
+		const AChessGrid* Grid, const FGridCoords& StartingPoint, EChessColor Color);
+	UFUNCTION(BlueprintCallable)
+	static TArray<FGridCoords> GetQueenMoves(
+		const AChessGrid* Grid, const FGridCoords& StartingPoint, EChessColor Color);
+	UFUNCTION(BlueprintCallable)
+	static TArray<FGridCoords> GetKingMoves(
+		const AChessGrid* Grid, const FGridCoords& StartingPoint, EChessColor Color);
 
 protected:
 	virtual void BeginPlay() override;
@@ -84,7 +109,7 @@ private:
 	AChessGrid* CachedGrid;
 
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	bool bIsMoveInProgress;
+	FGridCoords CurrentPosition;
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	FGridCoords PendingDestination;
 
