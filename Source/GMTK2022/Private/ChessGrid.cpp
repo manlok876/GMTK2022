@@ -110,7 +110,7 @@ bool AChessGrid::TryOccupyCell(AActor* EnteringActor, const FGridCoords& CellCoo
 
 	ActorsOnGrid[CellIdx1D] = EnteringActor;
 
-	return false;
+	return true;
 }
 
 bool AChessGrid::FreeCell(AActor* LeavingActor)
