@@ -12,8 +12,8 @@ FGridCoords::FGridCoords()
 
 FFigureInfo::FFigureInfo()
 {
-	Color = EChessColor::ECC_White;
 	Type = EFigureType::EFT_Pawn;
+	Color = EChessColor::ECC_White;
 }
 
 FFigureSetupData::FFigureSetupData()
