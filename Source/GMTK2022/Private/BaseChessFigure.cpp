@@ -20,6 +20,7 @@ void ABaseChessFigure::BeginPlay()
 {
 	Super::BeginPlay();
 
+	CachedGrid = GetGrid();
 }
 
 void ABaseChessFigure::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -146,6 +147,7 @@ void ABaseChessFigure::EndMove()
 
 	bIsMoveInProgress = false;
 
+	OnMoveEnded();
 	if (MoveEndedDispatcher.IsBound())
 	{
 		MoveEndedDispatcher.Broadcast(this);
