@@ -2,6 +2,7 @@
 
 
 #include "ChessGrid.h"
+#include "BaseChessFigure.h"
 
 
 AChessGrid::AChessGrid()
@@ -31,7 +32,7 @@ bool AChessGrid::IsCellOccupied(const FGridCoords& CellCoords) const
 	return IsValid(GetActorOnCell(CellCoords));
 }
 
-AActor* AChessGrid::GetActorOnCell(const FGridCoords& CellCoords) const
+ABaseChessFigure* AChessGrid::GetActorOnCell(const FGridCoords& CellCoords) const
 {
 	if (!IsValidCell(CellCoords))
 	{
@@ -47,14 +48,14 @@ AActor* AChessGrid::GetActorOnCell(const FGridCoords& CellCoords) const
 	return ActorsOnGrid[CellIdx1D];
 }
 
-bool AChessGrid::IsActorOnGrid(const AActor* Target) const
+bool AChessGrid::IsActorOnGrid(const ABaseChessFigure* Target) const
 {
 	if (!IsValid(Target))
 	{
 		return false;
 	}
 
-	for (const AActor* Actor : ActorsOnGrid)
+	for (const ABaseChessFigure* Actor : ActorsOnGrid)
 	{
 		if (Target == Actor)
 		{
@@ -65,7 +66,7 @@ bool AChessGrid::IsActorOnGrid(const AActor* Target) const
 	return false;
 }
 
-bool AChessGrid::GetActorCoords(const AActor* Target, FGridCoords& Result) const
+bool AChessGrid::GetActorCoords(const ABaseChessFigure* Target, FGridCoords& Result) const
 {
 	if (!IsValid(Target))
 	{
@@ -91,7 +92,7 @@ bool AChessGrid::IsValidCell(const FGridCoords& CellCoords) const
 	return bIsValidRow && bIsValidColumn;
 }
 
-bool AChessGrid::TryOccupyCell(AActor* EnteringActor, const FGridCoords& CellCoords)
+bool AChessGrid::TryOccupyCell(ABaseChessFigure* EnteringActor, const FGridCoords& CellCoords)
 {
 	if (!IsValid(EnteringActor))
 	{
@@ -113,7 +114,7 @@ bool AChessGrid::TryOccupyCell(AActor* EnteringActor, const FGridCoords& CellCoo
 	return true;
 }
 
-bool AChessGrid::FreeCell(AActor* LeavingActor)
+bool AChessGrid::FreeCell(ABaseChessFigure* LeavingActor)
 {
 	FGridCoords CellCoords;
 	if (!GetActorCoords(LeavingActor, CellCoords))

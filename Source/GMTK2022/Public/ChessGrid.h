@@ -8,6 +8,7 @@
 #include "ChessGrid.generated.h"
 
 class AChessGrid;
+class ABaseChessFigure;
 
 UCLASS(Blueprintable, BlueprintType)
 class GMTK2022_API AChessGrid : public AActor
@@ -30,19 +31,19 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsCellOccupied(const FGridCoords& CellCoords) const;
 	UFUNCTION(BlueprintCallable)
-	AActor* GetActorOnCell(const FGridCoords& CellCoords) const;
+	ABaseChessFigure* GetActorOnCell(const FGridCoords& CellCoords) const;
 	UFUNCTION(BlueprintCallable, BlueprintPure = false)
-	bool IsActorOnGrid(const AActor* Target) const;
+	bool IsActorOnGrid(const ABaseChessFigure* Target) const;
 	UFUNCTION(BlueprintCallable, BlueprintPure = false)
-	bool GetActorCoords(const AActor* Target, FGridCoords& Result) const;
+	bool GetActorCoords(const ABaseChessFigure* Target, FGridCoords& Result) const;
 
 	UFUNCTION(BlueprintCallable)
 	bool IsValidCell(const FGridCoords& CellCoords) const;
 
 	UFUNCTION(BlueprintCallable)
-	bool TryOccupyCell(AActor* EnteringActor, const FGridCoords& CellCoords);
+	bool TryOccupyCell(ABaseChessFigure* EnteringActor, const FGridCoords& CellCoords);
 	UFUNCTION(BlueprintCallable)
-	bool FreeCell(AActor* LeavingActor);
+	bool FreeCell(ABaseChessFigure* LeavingActor);
 
 protected:
 	virtual void BeginPlay() override;
@@ -53,6 +54,6 @@ private:
 	FGridCoords GetCoordsFromIndex1D(int Idx) const;
 
 	UPROPERTY()
-	TArray<AActor*> ActorsOnGrid;
+	TArray<ABaseChessFigure*> ActorsOnGrid;
 
 };
