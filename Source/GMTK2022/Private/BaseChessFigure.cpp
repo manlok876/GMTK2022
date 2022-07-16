@@ -14,6 +14,7 @@ ABaseChessFigure::ABaseChessFigure()
 	CachedGrid = nullptr;
 	bIsMoveInProgress = false;
 	PendingCombatTarget = nullptr;
+	FigureColor = EChessColor::ECC_White;
 }
 
 void ABaseChessFigure::BeginPlay()
@@ -92,6 +93,11 @@ bool ABaseChessFigure::IsMoveInProgress() const
 FGridCoords ABaseChessFigure::GetPendingDestination() const
 {
 	return PendingDestination;
+}
+
+EChessColor ABaseChessFigure::GetFigureColor() const
+{
+	return FigureColor;
 }
 
 ABaseChessFigure* ABaseChessFigure::GetPendingCombatTarget() const

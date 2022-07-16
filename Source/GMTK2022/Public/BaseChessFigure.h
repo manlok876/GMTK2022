@@ -33,6 +33,8 @@ public:
 	bool IsMoveInProgress() const;
 	FGridCoords GetPendingDestination() const;
 
+	EChessColor GetFigureColor() const;
+
 	ABaseChessFigure* GetPendingCombatTarget() const;
 	UFUNCTION(BlueprintPure)
 	bool IsCombatPending() const;
@@ -78,5 +80,8 @@ private:
 
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	ABaseChessFigure* PendingCombatTarget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true", ExposeOnSpawn))
+	EChessColor FigureColor;
 
 };
