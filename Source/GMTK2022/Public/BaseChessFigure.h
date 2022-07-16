@@ -36,6 +36,10 @@ public:
 
 	EChessColor GetFigureColor() const;
 
+	EFigureType GetFigureType() const;
+	UFUNCTION(BlueprintCallable)
+	void SetFigureType(EFigureType NewType);
+
 	ABaseChessFigure* GetPendingCombatTarget() const;
 	UFUNCTION(BlueprintPure)
 	bool IsCombatPending() const;
@@ -73,7 +77,7 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnColorChanged(EChessColor NewColor);
 	UFUNCTION(BlueprintImplementableEvent)
-	void OnValueChanged(int NewValue);
+	void OnTypeChanged(EFigureType NewType);
 
 private:
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
@@ -89,5 +93,8 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true", ExposeOnSpawn))
 	EChessColor FigureColor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	EFigureType FigureType;
 
 };

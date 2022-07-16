@@ -14,6 +14,7 @@ ABaseChessFigure::ABaseChessFigure()
 	CachedGrid = nullptr;
 	bIsMoveInProgress = false;
 	PendingCombatTarget = nullptr;
+	FigureType = EFigureType::EFT_Pawn;
 	FigureColor = EChessColor::ECC_White;
 }
 
@@ -21,6 +22,7 @@ void ABaseChessFigure::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
 
+	OnTypeChanged(FigureType);
 	OnColorChanged(FigureColor);
 }
 
@@ -105,6 +107,23 @@ FGridCoords ABaseChessFigure::GetPendingDestination() const
 EChessColor ABaseChessFigure::GetFigureColor() const
 {
 	return FigureColor;
+}
+
+EFigureType ABaseChessFigure::GetFigureType() const
+{
+	return FigureType;
+}
+
+void ABaseChessFigure::SetFigureType(EFigureType NewType)
+{
+	if (GetFigureType() == NewType)
+	{
+		return;
+	}
+
+	FigureType = NewType;
+
+	OnTypeChanged(NewType);
 }
 
 ABaseChessFigure* ABaseChessFigure::GetPendingCombatTarget() const
