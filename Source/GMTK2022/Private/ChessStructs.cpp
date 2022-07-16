@@ -6,6 +6,22 @@
 
 FGridCoords::FGridCoords()
 {
-	Row = -1;
-	Column = -1;
+	Row = 0;
+	Column = 0;
+}
+
+FFigureInfo::FFigureInfo()
+{
+	Color = EChessColor::ECC_White;
+	Type = EFigureType::EFT_Pawn;
+}
+
+FFigureSetupData::FFigureSetupData()
+{
+
+}
+
+UBoardSetup::UBoardSetup()
+{
+
 }
