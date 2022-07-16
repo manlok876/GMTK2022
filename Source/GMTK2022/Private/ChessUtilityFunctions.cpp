@@ -65,3 +65,16 @@ EFigureType UChessUtilityFunctions::GetTypeForValue(int Value)
 
 	return Result;
 }
+
+int UChessUtilityFunctions::GetMaxValue()
+{
+	return 12;
+}
+
+bool UChessUtilityFunctions::CanCombineFigures(EFigureType FirstFigure, EFigureType SecondFigure)
+{
+	return FirstFigure != EFigureType::EFT_None && SecondFigure != EFigureType::EFT_None &&
+		(UChessUtilityFunctions::GetValueForType(FirstFigure) +
+			UChessUtilityFunctions::GetValueForType(SecondFigure) <=
+			UChessUtilityFunctions::GetMaxValue());
+}

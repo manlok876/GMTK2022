@@ -22,4 +22,9 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	static EFigureType GetTypeForValue(int Value);
+
+	UFUNCTION(BlueprintPure)
+	static int GetMaxValue();
+	UFUNCTION(BlueprintPure)
+	static bool CanCombineFigures(EFigureType FirstFigure, EFigureType SecondFigure);
 };
