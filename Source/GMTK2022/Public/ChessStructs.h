@@ -47,9 +47,9 @@ public:
 	FFigureInfo();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EChessColor Color;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EFigureType Type;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EChessColor Color;
 };
 
 USTRUCT(BlueprintType)
@@ -61,9 +61,9 @@ public:
 	FFigureSetupData();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FGridCoords Position;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FFigureInfo Figure;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FGridCoords Position;
 };
 
 UCLASS(BlueprintType)
