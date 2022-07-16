@@ -61,10 +61,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	static TArray<FGridCoords> GetPawnMoves(
-		const AChessGrid* Grid, const FGridCoords& StartingPoint, EChessColor Color);
+		const AChessGrid* Grid, const FGridCoords& StartingPoint, EChessColor Color, bool bIsFirstMove = false);
 	UFUNCTION(BlueprintCallable)
 	static TArray<FGridCoords> GetRookMoves(
-		const AChessGrid* Grid, const FGridCoords& StartingPoint, EChessColor Color);
+		const AChessGrid* Grid, const FGridCoords& StartingPoint, EChessColor Color, bool bIsFirstMove = false);
 	UFUNCTION(BlueprintCallable)
 	static TArray<FGridCoords> GetKnightMoves(
 		const AChessGrid* Grid, const FGridCoords& StartingPoint, EChessColor Color);
@@ -76,7 +76,7 @@ public:
 		const AChessGrid* Grid, const FGridCoords& StartingPoint, EChessColor Color);
 	UFUNCTION(BlueprintCallable)
 	static TArray<FGridCoords> GetKingMoves(
-		const AChessGrid* Grid, const FGridCoords& StartingPoint, EChessColor Color);
+		const AChessGrid* Grid, const FGridCoords& StartingPoint, EChessColor Color, bool bIsFirstMove = false);
 
 protected:
 	virtual void BeginPlay() override;
@@ -121,5 +121,8 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	EFigureType FigureType;
+
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	bool bHasMoved;
 
 };

@@ -16,6 +16,7 @@ ABaseChessFigure::ABaseChessFigure()
 	PendingCombatTarget = nullptr;
 	FigureType = EFigureType::EFT_Pawn;
 	FigureColor = EChessColor::ECC_White;
+	bHasMoved = false;
 }
 
 void ABaseChessFigure::OnConstruction(const FTransform& Transform)
@@ -83,22 +84,22 @@ TArray<FGridCoords> ABaseChessFigure::GetPossibleMoves_Implementation()
 	switch (GetFigureType())
 	{
 	case EFigureType::EFT_Pawn:
-		GetPawnMoves(Grid, CurrentPosition, GetFigureColor());
+		Result = GetPawnMoves(Grid, CurrentPosition, GetFigureColor(), !bHasMoved);
 		break;
 	case EFigureType::EFT_Rook:
-		GetRookMoves(Grid, CurrentPosition, GetFigureColor());
+		Result = GetRookMoves(Grid, CurrentPosition, GetFigureColor(), !bHasMoved);
 		break;
 	case EFigureType::EFT_Knight:
-		GetKnightMoves(Grid, CurrentPosition, GetFigureColor());
+		Result = GetKnightMoves(Grid, CurrentPosition, GetFigureColor());
 		break;
 	case EFigureType::EFT_Bishop:
-		GetBishopMoves(Grid, CurrentPosition, GetFigureColor());
+		Result = GetBishopMoves(Grid, CurrentPosition, GetFigureColor());
 		break;
 	case EFigureType::EFT_Queen:
-		GetQueenMoves(Grid, CurrentPosition, GetFigureColor());
+		Result = GetQueenMoves(Grid, CurrentPosition, GetFigureColor());
 		break;
 	case EFigureType::EFT_King:
-		GetKingMoves(Grid, CurrentPosition, GetFigureColor());
+		Result = GetKingMoves(Grid, CurrentPosition, GetFigureColor(), !bHasMoved);
 		break;
 	default:
 		break;
@@ -142,7 +143,7 @@ bool ABaseChessFigure::CanEnterCell(
 }
 
 TArray<FGridCoords> ABaseChessFigure::GetPawnMoves(
-	const AChessGrid* Grid, const FGridCoords& StartingPoint, EChessColor Color)
+	const AChessGrid* Grid, const FGridCoords& StartingPoint, EChessColor Color, bool bIsFirstMove)
 {
 	TArray<FGridCoords> Result;
 
@@ -152,22 +153,26 @@ TArray<FGridCoords> ABaseChessFigure::GetPawnMoves(
 	}
 
 	FGridCoords FrontCell;
+	FGridCoords SkipCell;
 	FGridCoords LeftCell;
 	FGridCoords RightCell;
 	if (Color == EChessColor::ECC_White)
 	{
 		FrontCell = StartingPoint + FGridCoords(0, 1);
+		SkipCell = StartingPoint + FGridCoords(0, 2);
 		LeftCell = StartingPoint + FGridCoords(-1, 1);
 		RightCell = StartingPoint + FGridCoords(1, 1);
 	}
 	else
 	{
 		FrontCell = StartingPoint + FGridCoords(0, -1);
+		SkipCell = StartingPoint + FGridCoords(0, -2);
 		LeftCell = StartingPoint + FGridCoords(-1, -1);
 		RightCell = StartingPoint + FGridCoords(1, -1);
 	}
 
 	ABaseChessFigure* FrontCellActor = Grid->GetActorOnCell(FrontCell);
+	ABaseChessFigure* SkipCellActor = Grid->GetActorOnCell(SkipCell);
 	ABaseChessFigure* LeftCellActor = Grid->GetActorOnCell(LeftCell);
 	ABaseChessFigure* RightCellActor = Grid->GetActorOnCell(RightCell);
 
@@ -176,6 +181,12 @@ TArray<FGridCoords> ABaseChessFigure::GetPawnMoves(
 			UChessUtilityFunctions::CanCombineFigures(FrontCellActor->GetFigureType(), EFigureType::EFT_Pawn)))
 	{
 		Result.Add(FrontCell);
+		if (bIsFirstMove && !IsValid(SkipCellActor) ||
+			(SkipCellActor->FigureColor == Color &&
+				UChessUtilityFunctions::CanCombineFigures(SkipCellActor->GetFigureType(), EFigureType::EFT_Pawn)))
+		{
+			Result.Add(SkipCell);
+		}
 	}
 	if (IsValid(LeftCellActor) && LeftCellActor->FigureColor != Color)
 	{
@@ -190,7 +201,7 @@ TArray<FGridCoords> ABaseChessFigure::GetPawnMoves(
 }
 
 TArray<FGridCoords> ABaseChessFigure::GetRookMoves(
-	const AChessGrid* Grid, const FGridCoords& StartingPoint, EChessColor Color)
+	const AChessGrid* Grid, const FGridCoords& StartingPoint, EChessColor Color, bool bIsFirstMove)
 {
 	TArray<FGridCoords> Result;
 
@@ -354,7 +365,7 @@ TArray<FGridCoords> ABaseChessFigure::GetQueenMoves(
 }
 
 TArray<FGridCoords> ABaseChessFigure::GetKingMoves(
-	const AChessGrid* Grid, const FGridCoords& StartingPoint, EChessColor Color)
+	const AChessGrid* Grid, const FGridCoords& StartingPoint, EChessColor Color, bool bIsFirstMove)
 {
 	TArray<FGridCoords> Result;
 
