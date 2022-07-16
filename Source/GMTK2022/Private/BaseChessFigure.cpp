@@ -192,31 +192,199 @@ TArray<FGridCoords> ABaseChessFigure::GetPawnMoves(
 TArray<FGridCoords> ABaseChessFigure::GetRookMoves(
 	const AChessGrid* Grid, const FGridCoords& StartingPoint, EChessColor Color)
 {
-	return TArray<FGridCoords>();
+	TArray<FGridCoords> Result;
+
+	if (!IsValid(Grid))
+	{
+		return Result;
+	}
+
+	TArray<FGridCoords> Directions =
+	{
+		FGridCoords(1, 0),
+		FGridCoords(-1, 0),
+		FGridCoords(0, 1),
+		FGridCoords(0, -1)
+	};
+
+	for (const FGridCoords& Direction : Directions)
+	{
+		FGridCoords CurCell = StartingPoint + Direction;
+		while (Grid->IsValidCell(CurCell))
+		{
+			if (!Grid->IsCellOccupied(CurCell))
+			{
+				Result.Add(CurCell);
+			}
+			else
+			{
+				if (CanEnterCell(Grid, CurCell, Color, EFigureType::EFT_Rook))
+				{
+					Result.Add(CurCell);
+				}
+				break;
+			}
+			CurCell = CurCell + Direction;
+		}
+	}
+
+	return Result;
 }
 
 TArray<FGridCoords> ABaseChessFigure::GetKnightMoves(
 	const AChessGrid* Grid, const FGridCoords& StartingPoint, EChessColor Color)
 {
-	return TArray<FGridCoords>();
+	TArray<FGridCoords> Result;
+
+	if (!IsValid(Grid))
+	{
+		return Result;
+	}
+
+	TArray<FGridCoords> Directions =
+	{
+		FGridCoords(2, 1),
+		FGridCoords(2, -1),
+		FGridCoords(-2, 1),
+		FGridCoords(-2, -1),
+		FGridCoords(1, 2),
+		FGridCoords(-1, 2),
+		FGridCoords(1, -2),
+		FGridCoords(-1, -2)
+	};
+
+	for (const FGridCoords& Direction : Directions)
+	{
+		FGridCoords CurCell = StartingPoint + Direction;
+		if (CanEnterCell(Grid, CurCell, Color, EFigureType::EFT_King))
+		{
+			Result.Add(CurCell);
+		}
+	}
+
+	return Result;
 }
 
 TArray<FGridCoords> ABaseChessFigure::GetBishopMoves(
 	const AChessGrid* Grid, const FGridCoords& StartingPoint, EChessColor Color)
 {
-	return TArray<FGridCoords>();
+	TArray<FGridCoords> Result;
+
+	if (!IsValid(Grid))
+	{
+		return Result;
+	}
+
+	TArray<FGridCoords> Directions =
+	{
+		FGridCoords(1, 1),
+		FGridCoords(-1, -1),
+		FGridCoords(1, -1),
+		FGridCoords(-1, 1)
+	};
+
+	for (const FGridCoords& Direction : Directions)
+	{
+		FGridCoords CurCell = StartingPoint + Direction;
+		while (Grid->IsValidCell(CurCell))
+		{
+			if (!Grid->IsCellOccupied(CurCell))
+			{
+				Result.Add(CurCell);
+			}
+			else
+			{
+				if (CanEnterCell(Grid, CurCell, Color, EFigureType::EFT_Bishop))
+				{
+					Result.Add(CurCell);
+				}
+				break;
+			}
+			CurCell = CurCell + Direction;
+		}
+	}
+
+	return Result;
 }
 
 TArray<FGridCoords> ABaseChessFigure::GetQueenMoves(
 	const AChessGrid* Grid, const FGridCoords& StartingPoint, EChessColor Color)
 {
-	return TArray<FGridCoords>();
+	TArray<FGridCoords> Result;
+
+	if (!IsValid(Grid))
+	{
+		return Result;
+	}
+
+	TArray<FGridCoords> Directions =
+	{
+		FGridCoords(1, 0),
+		FGridCoords(-1, 0),
+		FGridCoords(0, 1),
+		FGridCoords(0, -1),
+		FGridCoords(1, 1),
+		FGridCoords(-1, -1),
+		FGridCoords(1, -1),
+		FGridCoords(-1, 1)
+	};
+
+	for (const FGridCoords& Direction : Directions)
+	{
+		FGridCoords CurCell = StartingPoint + Direction;
+		while (Grid->IsValidCell(CurCell))
+		{
+			if (!Grid->IsCellOccupied(CurCell))
+			{
+				Result.Add(CurCell);
+			}
+			else
+			{
+				if (CanEnterCell(Grid, CurCell, Color, EFigureType::EFT_Queen))
+				{
+					Result.Add(CurCell);
+				}
+				break;
+			}
+			CurCell = CurCell + Direction;
+		}
+	}
+
+	return Result;
 }
 
 TArray<FGridCoords> ABaseChessFigure::GetKingMoves(
 	const AChessGrid* Grid, const FGridCoords& StartingPoint, EChessColor Color)
 {
-	return TArray<FGridCoords>();
+	TArray<FGridCoords> Result;
+
+	if (!IsValid(Grid))
+	{
+		return Result;
+	}
+
+	TArray<FGridCoords> Directions =
+	{
+		FGridCoords(1, 0),
+		FGridCoords(-1, 0),
+		FGridCoords(0, 1),
+		FGridCoords(0, -1),
+		FGridCoords(1, 1),
+		FGridCoords(-1, -1),
+		FGridCoords(1, -1),
+		FGridCoords(-1, 1)
+	};
+
+	for (const FGridCoords& Direction : Directions)
+	{
+		FGridCoords CurCell = StartingPoint + Direction;
+		if (CanEnterCell(Grid, CurCell, Color, EFigureType::EFT_King))
+		{
+			Result.Add(CurCell);
+		}
+	}
+
+	return Result;
 }
 
 bool ABaseChessFigure::CanGoTo_Implementation(const FGridCoords& Cell)
