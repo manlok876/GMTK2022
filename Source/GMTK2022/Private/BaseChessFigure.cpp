@@ -17,6 +17,13 @@ ABaseChessFigure::ABaseChessFigure()
 	FigureColor = EChessColor::ECC_White;
 }
 
+void ABaseChessFigure::OnConstruction(const FTransform& Transform)
+{
+	Super::OnConstruction(Transform);
+
+	OnColorChanged(FigureColor);
+}
+
 void ABaseChessFigure::BeginPlay()
 {
 	Super::BeginPlay();

@@ -19,6 +19,7 @@ class GMTK2022_API ABaseChessFigure : public APawn
 public:
 	ABaseChessFigure();
 
+	virtual void OnConstruction(const FTransform& Transform) override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
@@ -68,6 +69,11 @@ protected:
 	void EndMove();
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnMoveEnded();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnColorChanged(EChessColor NewColor);
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnValueChanged(int NewValue);
 
 private:
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
