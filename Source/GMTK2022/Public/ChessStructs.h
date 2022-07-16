@@ -14,11 +14,19 @@ struct FGridCoords
 
 public:
 	FGridCoords();
+	FGridCoords(int InColumn, int InRow);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int Row;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int Column;
+
+	bool operator==(const FGridCoords& Point) const;
+	bool operator!=(const FGridCoords& Point) const;
+
+	FGridCoords operator+(const FGridCoords& Point) const;
+	FGridCoords operator-(const FGridCoords& Point) const;
+
 };
 
 UENUM(BlueprintType)
