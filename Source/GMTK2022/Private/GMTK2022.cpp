@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright Denis Maximenko, July 2022
 
 #include "GMTK2022.h"
 #include "Modules/ModuleManager.h"
