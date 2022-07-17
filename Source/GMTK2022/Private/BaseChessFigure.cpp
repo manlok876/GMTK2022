@@ -268,7 +268,7 @@ TArray<FGridCoords> ABaseChessFigure::GetKnightMoves(
 	for (const FGridCoords& Direction : Directions)
 	{
 		FGridCoords CurCell = StartingPoint + Direction;
-		if (CanEnterCell(Grid, CurCell, Color, EFigureType::EFT_King))
+		if (CanEnterCell(Grid, CurCell, Color, EFigureType::EFT_Knight))
 		{
 			Result.Add(CurCell);
 		}
