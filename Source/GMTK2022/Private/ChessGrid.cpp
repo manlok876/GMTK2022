@@ -87,8 +87,8 @@ bool AChessGrid::GetActorCoords(const ABaseChessFigure* Target, FGridCoords& Res
 
 bool AChessGrid::IsValidCell(const FGridCoords& CellCoords) const
 {
-	bool bIsValidRow = CellCoords.Row >= 0 && CellCoords.Row <= Rows;
-	bool bIsValidColumn = CellCoords.Column >= 0 && CellCoords.Column <= Columns;
+	bool bIsValidRow = CellCoords.Row >= 0 && CellCoords.Row <= Rows - 1;
+	bool bIsValidColumn = CellCoords.Column >= 0 && CellCoords.Column <= Columns - 1;
 	return bIsValidRow && bIsValidColumn;
 }
 
