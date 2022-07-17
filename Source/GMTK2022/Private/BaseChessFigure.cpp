@@ -630,11 +630,13 @@ void ABaseChessFigure::EndCombat()
 	if (OurSavedRoll >= EnemySavedRoll)
 	{
 		Target->Destroy();
+		OnKill();
 		ClearInteraction();
 	}
 	else
 	{
 		bAwaitingDestroy = true;
+		OnDeath();
 		Target->ClearInteraction();
 	}
 }
@@ -654,6 +656,7 @@ void ABaseChessFigure::EndMerge()
 
 	Target->SetFigureType(UChessUtilityFunctions::GetMergeResult(GetFigureType(), Target->GetFigureType()));
 	bAwaitingDestroy = true;
+	OnMerge();
 	Target->ClearInteraction();
 }
 

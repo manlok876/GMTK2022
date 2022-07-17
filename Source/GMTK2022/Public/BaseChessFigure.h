@@ -120,6 +120,13 @@ protected:
 	void OnMoveEnded();
 
 	UFUNCTION(BlueprintImplementableEvent)
+	void OnKill();
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnDeath();
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnMerge();
+
+	UFUNCTION(BlueprintImplementableEvent)
 	void OnColorChanged(EChessColor NewColor);
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnTypeChanged(EFigureType NewType);
