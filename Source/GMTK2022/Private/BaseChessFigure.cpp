@@ -195,7 +195,7 @@ TArray<FGridCoords> ABaseChessFigure::GetPawnMoves(
 	{
 		Result.Add(LeftCell);
 	}
-	if (IsValid(LeftCellActor) && LeftCellActor->FigureColor != Color)
+	if (IsValid(RightCellActor) && RightCellActor->FigureColor != Color)
 	{
 		Result.Add(RightCell);
 	}
