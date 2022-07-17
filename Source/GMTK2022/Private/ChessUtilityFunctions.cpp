@@ -74,7 +74,12 @@ int UChessUtilityFunctions::GetMaxValue()
 bool UChessUtilityFunctions::CanCombineFigures(EFigureType FirstFigure, EFigureType SecondFigure)
 {
 	return FirstFigure != EFigureType::EFT_None && SecondFigure != EFigureType::EFT_None &&
-		(UChessUtilityFunctions::GetValueForType(FirstFigure) +
-			UChessUtilityFunctions::GetValueForType(SecondFigure) <=
-			UChessUtilityFunctions::GetMaxValue());
+		(GetValueForType(FirstFigure) + GetValueForType(SecondFigure) <= GetMaxValue());
+}
+
+EFigureType UChessUtilityFunctions::GetMergeResult(EFigureType FirstFigure, EFigureType SecondFigure)
+{
+	int ResultingValue = GetValueForType(FirstFigure) + GetValueForType(SecondFigure);
+	ResultingValue = FMath::Min(ResultingValue, GetMaxValue());
+	return GetTypeForValue(ResultingValue);
 }

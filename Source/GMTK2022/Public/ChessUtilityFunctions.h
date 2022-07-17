@@ -27,4 +27,7 @@ public:
 	static int GetMaxValue();
 	UFUNCTION(BlueprintPure)
 	static bool CanCombineFigures(EFigureType FirstFigure, EFigureType SecondFigure);
+	UFUNCTION(BlueprintPure)
+	static EFigureType GetMergeResult(EFigureType FirstFigure, EFigureType SecondFigure);
+
 };
