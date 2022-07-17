@@ -145,6 +145,9 @@ private:
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	bool bHasMoved;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	int AttackBonus;
+
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int OurSavedRoll;
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))

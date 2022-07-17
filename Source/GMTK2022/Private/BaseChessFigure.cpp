@@ -18,6 +18,8 @@ ABaseChessFigure::ABaseChessFigure()
 	FigureColor = EChessColor::ECC_White;
 	bHasMoved = false;
 	bAwaitingDestroy = false;
+
+	AttackBonus = 0;
 }
 
 void ABaseChessFigure::OnConstruction(const FTransform& Transform)
@@ -476,7 +478,7 @@ void ABaseChessFigure::BeginCombat(ABaseChessFigure* Target)
 	OurSavedRoll = EnemySavedRoll = 0;
 	while (OurSavedRoll == EnemySavedRoll)
 	{
-		OurSavedRoll = PerformRoll();
+		OurSavedRoll = PerformRoll(AttackBonus);
 		EnemySavedRoll = Target->PerformRoll();
 	}
 	StartCombatAnimation(Target, true);
