@@ -184,9 +184,9 @@ TArray<FGridCoords> ABaseChessFigure::GetPawnMoves(
 			UChessUtilityFunctions::CanCombineFigures(FrontCellActor->GetFigureType(), EFigureType::EFT_Pawn)))
 	{
 		Result.Add(FrontCell);
-		if (bIsFirstMove && !IsValid(SkipCellActor) ||
+		if (bIsFirstMove && (!IsValid(SkipCellActor) ||
 			(SkipCellActor->FigureColor == Color &&
-				UChessUtilityFunctions::CanCombineFigures(SkipCellActor->GetFigureType(), EFigureType::EFT_Pawn)))
+				UChessUtilityFunctions::CanCombineFigures(SkipCellActor->GetFigureType(), EFigureType::EFT_Pawn))))
 		{
 			Result.Add(SkipCell);
 		}
