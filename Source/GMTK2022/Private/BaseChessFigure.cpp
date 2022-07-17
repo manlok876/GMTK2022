@@ -677,6 +677,7 @@ void ABaseChessFigure::EndMove()
 		{
 			check(Grid->TryOccupyCell(this, GetPendingDestination()));
 			CurrentPosition = GetPendingDestination();
+			bHasMoved = true;
 		}
 	}
 
