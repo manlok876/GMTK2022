@@ -659,6 +659,11 @@ void ABaseChessFigure::EndMerge()
 
 void ABaseChessFigure::EndMove()
 {
+	if (!IsMoveInProgress())
+	{
+		return;
+	}
+
 	if (IsInteractionPending())
 	{
 		EndInteraction();
