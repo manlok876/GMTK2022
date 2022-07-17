@@ -481,8 +481,6 @@ void ABaseChessFigure::BeginCombat(ABaseChessFigure* Target)
 		OurSavedRoll = PerformRoll(AttackBonus);
 		EnemySavedRoll = Target->PerformRoll();
 	}
-	StartCombatAnimation(Target, true);
-	Target->StartCombatAnimation(this, false);
 }
 
 void ABaseChessFigure::BeginMerge(ABaseChessFigure* Target)
