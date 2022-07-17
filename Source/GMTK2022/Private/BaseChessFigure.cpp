@@ -13,10 +13,11 @@ ABaseChessFigure::ABaseChessFigure()
 	PrimaryActorTick.bCanEverTick = true;
 
 	CachedGrid = nullptr;
-	PendingCombatTarget = nullptr;
+	PendingTarget = nullptr;
 	FigureType = EFigureType::EFT_Pawn;
 	FigureColor = EChessColor::ECC_White;
 	bHasMoved = false;
+	bAwaitingDestroy = false;
 }
 
 void ABaseChessFigure::OnConstruction(const FTransform& Transform)
@@ -424,9 +425,78 @@ bool ABaseChessFigure::TryGoTo(const FGridCoords& Cell)
 	}
 
 	PendingDestination = Cell;
+
+	AChessGrid* Grid = GetGrid();
+	if (IsValid(Grid))
+	{
+		if (Grid->IsCellOccupied(Cell))
+		{
+			BeginInteraction(Grid->GetActorOnCell(Cell));
+		}
+	}
 	StartMovementAnimation(Cell);
 
 	return true;
+}
+
+int ABaseChessFigure::PerformRoll(int AdditiveMod)
+{
+	int MaxValue = UChessUtilityFunctions::GetValueForType(GetFigureType());
+	int RollResult = FMath::RandRange(1, MaxValue);
+	return RollResult + FMath::Max(AdditiveMod, 0);
+}
+
+void ABaseChessFigure::BeginInteraction(ABaseChessFigure* Target)
+{
+	if (IsEnemy(Target))
+	{
+		BeginCombat(Target);
+	}
+	else if (IsAlly(Target))
+	{
+		BeginMerge(Target);
+	}
+}
+
+void ABaseChessFigure::BeginCombat(ABaseChessFigure* Target)
+{
+	if (!IsValid(Target))
+	{
+		return;
+	}
+
+	if (!IsEnemy(Target))
+	{
+		return;
+	}
+
+	PrepareToInteract(Target);
+	Target->PrepareToInteract(this);
+
+	OurSavedRoll = EnemySavedRoll = 0;
+	while (OurSavedRoll == EnemySavedRoll)
+	{
+		OurSavedRoll = PerformRoll();
+		EnemySavedRoll = Target->PerformRoll();
+	}
+	StartCombatAnimation(Target, true);
+	Target->StartCombatAnimation(this, false);
+}
+
+void ABaseChessFigure::BeginMerge(ABaseChessFigure* Target)
+{
+	if (!IsValid(Target))
+	{
+		return;
+	}
+
+	if (!IsAlly(Target))
+	{
+		return;
+	}
+
+	PrepareToInteract(Target);
+	Target->PrepareToInteract(this);
 }
 
 bool ABaseChessFigure::IsMoveInProgress() const
@@ -461,35 +531,59 @@ void ABaseChessFigure::SetFigureType(EFigureType NewType)
 	OnTypeChanged(NewType);
 }
 
-ABaseChessFigure* ABaseChessFigure::GetPendingCombatTarget() const
+ABaseChessFigure* ABaseChessFigure::GetPendingTarget() const
 {
-	return PendingCombatTarget;
+	return PendingTarget;
 }
 
-bool ABaseChessFigure::IsCombatPending() const
+bool ABaseChessFigure::IsInteractionPending() const
 {
-	return IsValid(GetPendingCombatTarget());
+	return IsValid(GetPendingTarget());
 }
 
-void ABaseChessFigure::PrepareToDefend_Implementation(ABaseChessFigure* Attacker)
+bool ABaseChessFigure::IsEnemy(ABaseChessFigure* Target) const
 {
-	PendingCombatTarget = Attacker;
+	if (!IsValid(Target))
+	{
+		return false;
+	}
+
+	return Target->GetFigureColor() != GetFigureColor();
 }
 
-void ABaseChessFigure::ClearPendingCombat_Implementation()
+bool ABaseChessFigure::IsAlly(ABaseChessFigure* Target) const
 {
-	PendingCombatTarget = nullptr;
+	if (!IsValid(Target))
+	{
+		return false;
+	}
+
+	return Target->GetFigureColor() == GetFigureColor();
+}
+
+void ABaseChessFigure::PrepareToInteract_Implementation(ABaseChessFigure* Target)
+{
+	PendingTarget = Target;
+}
+
+void ABaseChessFigure::ClearInteraction_Implementation()
+{
+	PendingTarget = nullptr;
 }
 
 void ABaseChessFigure::EndMovementAnimation()
 {
-	if (IsCombatPending())
+	if (IsInteractionPending())
 	{
-		ABaseChessFigure* Target = GetPendingCombatTarget();
+		ABaseChessFigure* Target = GetPendingTarget();
 		if (IsValid(Target))
 		{
 			StartCombatAnimation(Target, true);
 			Target->StartCombatAnimation(this, false);
+		}
+		else
+		{
+			EndMove();
 		}
 	}
 	else
@@ -500,22 +594,95 @@ void ABaseChessFigure::EndMovementAnimation()
 
 void ABaseChessFigure::EndCombatAnimation()
 {
-	ClearPendingCombat();
+	EndMove();
+}
+
+void ABaseChessFigure::EndInteraction()
+{
+	if (!IsInteractionPending())
+	{
+		return;
+	}
+
+	if (IsEnemy(GetPendingTarget()))
+	{
+		EndCombat();
+	}
+	else if (IsAlly(GetPendingTarget()))
+	{
+		EndMerge();
+	}
+}
+
+void ABaseChessFigure::EndCombat()
+{
+	if (!IsEnemy(GetPendingTarget()))
+	{
+		return;
+	}
+
+	ABaseChessFigure* Target = GetPendingTarget();
+	if (!IsValid(Target))
+	{
+		return;
+	}
+
+	if (OurSavedRoll >= EnemySavedRoll)
+	{
+		Target->Destroy();
+		ClearInteraction();
+	}
+	else
+	{
+		bAwaitingDestroy = true;
+		Target->ClearInteraction();
+	}
+}
+
+void ABaseChessFigure::EndMerge()
+{
+	if (!IsAlly(GetPendingTarget()))
+	{
+		return;
+	}
+
+	ABaseChessFigure* Target = GetPendingTarget();
+	if (!IsValid(Target))
+	{
+		return;
+	}
+
+	Target->SetFigureType(UChessUtilityFunctions::GetMergeResult(GetFigureType(), Target->GetFigureType()));
+	bAwaitingDestroy = true;
+	Target->ClearInteraction();
 }
 
 void ABaseChessFigure::EndMove()
 {
+	if (IsInteractionPending())
+	{
+		EndInteraction();
+	}
+
 	AChessGrid* Grid = GetGrid();
 	if (IsValid(Grid))
 	{
 		Grid->FreeCell(this);
-		check(Grid->TryOccupyCell(this, GetPendingDestination()));
-		CurrentPosition = GetPendingDestination();
+		if (!bAwaitingDestroy)
+		{
+			check(Grid->TryOccupyCell(this, GetPendingDestination()));
+			CurrentPosition = GetPendingDestination();
+		}
 	}
 
 	OnMoveEnded();
 	if (MoveEndedDispatcher.IsBound())
 	{
 		MoveEndedDispatcher.Broadcast(this);
+	}
+
+	if (bAwaitingDestroy)
+	{
+		Destroy();
 	}
 }

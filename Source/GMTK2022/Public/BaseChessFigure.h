@@ -46,15 +46,35 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetFigureType(EFigureType NewType);
 
-	ABaseChessFigure* GetPendingCombatTarget() const;
+	ABaseChessFigure* GetPendingTarget() const;
 	UFUNCTION(BlueprintPure)
-	bool IsCombatPending() const;
+	bool IsInteractionPending() const;
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void ClearInteraction();
+	UFUNCTION(BlueprintPure)
+	bool IsEnemy(ABaseChessFigure* Target) const;
+	UFUNCTION(BlueprintPure)
+	bool IsAlly(ABaseChessFigure* Target) const;
+
+	UFUNCTION(BlueprintCallable)
+	int PerformRoll(int AdditiveMod = 0);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void PrepareToDefend(ABaseChessFigure* Attacker);
+	void PrepareToInteract(ABaseChessFigure* Target);
 
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void ClearPendingCombat();
+	UFUNCTION(BlueprintCallable)
+	void BeginInteraction(ABaseChessFigure* Target);
+	UFUNCTION()
+	void BeginCombat(ABaseChessFigure* Target);
+	UFUNCTION()
+	void BeginMerge(ABaseChessFigure* Target);
+
+	UFUNCTION()
+	void EndInteraction();
+	UFUNCTION()
+	void EndCombat();
+	UFUNCTION()
+	void EndMerge();
 
 	UPROPERTY(BlueprintAssignable)
 	FChessMoveEndedSignature MoveEndedDispatcher;
@@ -114,7 +134,7 @@ private:
 	FGridCoords PendingDestination;
 
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	ABaseChessFigure* PendingCombatTarget;
+	ABaseChessFigure* PendingTarget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true", ExposeOnSpawn))
 	EChessColor FigureColor;
@@ -124,5 +144,13 @@ private:
 
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	bool bHasMoved;
+
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	int OurSavedRoll;
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	int EnemySavedRoll;
+
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	bool bAwaitingDestroy;
 
 };
